@@ -14,23 +14,36 @@ datasource db {
 }
 
 model Startup {
-  id           Int      @id @default(autoincrement())
-  name         String   @unique
-  actualInvest Int      @default(0) // 실제 누적 투자 금액
-  simInvest    Int      @default(0) // 모의 누적 투자 금액
+  id           Int            @id @default(autoincrement())
+  name         String         @unique
+  category     Category       @relation(fields: [categoryId], references: [id])
+  categoryId   Int
+  actualInvest Int            @default(0) // 실제 누적 투자 금액
+  simInvest    Int            @default(0) // 모의 누적 투자 금액
   revenue      Int // 매출액
   employees    Int
-  description  String   @db.Text // 기업 소개
-  count        Int      @default(0)
+  description  String         @db.Text // 기업 소개
+  count        Int            @default(0)
   image        String?
-  createAt     DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  category     Category @relation(fields: [categoryId], references: [id])
-  categoryId   Int
+  createAt     DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  MockInvestor MockInvestor[]
 }
 
 model Category {
   id       Int       @id @default(autoincrement())
   category String    @unique
   startups Startup[]
+}
+
+model MockInvestor {
+  id           Int      @id @default(autoincrement())
+  name         String
+  startup      Startup  @relation(fields: [startupId], references: [id])
+  startupId    Int
+  investAmount Int      @default(0)
+  comment      String   @db.Text
+  password     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
