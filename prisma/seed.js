@@ -16,7 +16,7 @@ async function main() {
   await prisma.startup.createMany({
     data: STARTUPS,
     skipDuplicates: true,
-  });
+  });``
 
   await prisma.mockInvestor.createMany({
     data: MOCK_INVESTORS,
