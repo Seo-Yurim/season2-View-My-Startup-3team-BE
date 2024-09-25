@@ -3,6 +3,9 @@ dotenv.config();
 import express from 'express'
 import cors from 'cors'
 import startupsRoute from './routes/startupsRoute.js';
+import investmentsRoute from './routes/investmentsRoute.js';
+import comparisonsRoute from './routes/comparisonsRoute.js';
+import selectionsRoute from './routes/selectionsRoute.js';
 
 const app = express();
 app.use(express.json());
@@ -22,5 +25,8 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/startups', startupsRoute);
+app.use('/api/startups', comparisonsRoute);
+app.use('/api/investments', investmentsRoute);
+app.use('/api/selectios', selectionsRoute);
 
 app.listen(process.env.PORT || 3000, () => console.log('Server Started'));
