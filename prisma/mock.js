@@ -17,7 +17,7 @@ export const STARTUPS = [
     description: '코드잇은 프로그래밍과 데이터 분석 등 다양한 기술을 가르치는 온라인 교육 플랫폼입니다.',
     image: 'https://buffso-react.netlify.app/logo1.png',
     count: 0,
-    createAt: '2024-01-10T09:00:00Z',
+    createdAt: '2024-01-10T09:00:00Z',
     updatedAt: '2024-01-10T09:00:00Z',
   },
   {
@@ -31,7 +31,7 @@ export const STARTUPS = [
     description: '매스프레소는 AI 기반의 수학 문제 해결 및 튜터링 플랫폼입니다.',
     image: 'https://buffso-react.netlify.app/logo2.png',
     count: 0,
-    createAt: '2024-02-11T09:30:00Z',
+    createdAt: '2024-02-11T09:30:00Z',
     updatedAt: '2024-02-11T09:30:00Z',
   },
   {
@@ -45,7 +45,7 @@ export const STARTUPS = [
     description: '엘리스는 다양한 기술 교육을 제공하는 프로그래밍 학습 플랫폼입니다.',
     image: 'https://buffso-react.netlify.app/logo3.png',
     count: 0,
-    createAt: '2024-03-12T10:00:00Z',
+    createdAt: '2024-03-12T10:00:00Z',
     updatedAt: '2024-03-12T10:00:00Z',
   },
   {
@@ -59,7 +59,7 @@ export const STARTUPS = [
     description: '뤼이드는 AI를 활용한 학습 개인화와 시험 준비 솔루션을 제공합니다.',
     image: 'https://buffso-react.netlify.app/logo4.png',
     count: 0,
-    createAt: '2024-04-13T10:30:00Z',
+    createdAt: '2024-04-13T10:30:00Z',
     updatedAt: '2024-04-13T10:30:00Z',
   },
   {
@@ -73,7 +73,7 @@ export const STARTUPS = [
     description: '패스트캠퍼스는 성인 대상의 고등 교육과정을 제공하는 플랫폼입니다.',
     image: 'https://buffso-react.netlify.app/logo5.png',
     count: 0,
-    createAt: '2024-05-14T11:00:00Z',
+    createdAt: '2024-05-14T11:00:00Z',
     updatedAt: '2024-05-14T11:00:00Z',
   },
   {
@@ -87,7 +87,7 @@ export const STARTUPS = [
     description: '럭스로보는 모듈형 코딩 키트와 로봇을 통해 코딩 교육을 제공합니다.',
     image: 'https://buffso-react.netlify.app/logo6.png',
     count: 0,
-    createAt: '2024-06-15T11:30:00Z',
+    createdAt: '2024-06-15T11:30:00Z',
     updatedAt: '2024-06-15T11:30:00Z',
   },
   {
@@ -101,7 +101,7 @@ export const STARTUPS = [
     description: '클래스팅은 AI 기반의 맞춤형 교육 플랫폼입니다.',
     image: 'https://buffso-react.netlify.app/logo7.png',
     count: 0,
-    createAt: '2024-07-16T12:00:00Z',
+    createdAt: '2024-07-16T12:00:00Z',
     updatedAt: '2024-07-16T12:00:00Z',
   },
   {
@@ -115,7 +115,7 @@ export const STARTUPS = [
     description: '노리는 수학 학습을 게임화하여 개인화된 학습 경험을 제공합니다.',
     image: 'https://buffso-react.netlify.app/logo8.png',
     count: 0,
-    createAt: '2024-08-17T12:30:00Z',
+    createdAt: '2024-08-17T12:30:00Z',
     updatedAt: '2024-08-17T12:30:00Z',
   },
   {
@@ -129,7 +129,7 @@ export const STARTUPS = [
     description: '직방은 아파트 검색 및 부동산 관리 서비스를 제공합니다.',
     image: 'https://buffso-react.netlify.app/logo9.png',
     count: 0,
-    createAt: '2024-09-18T13:00:00Z',
+    createdAt: '2024-09-18T13:00:00Z',
     updatedAt: '2024-09-18T13:00:00Z',
   },
   {
@@ -143,7 +143,7 @@ export const STARTUPS = [
     description: '당근마켓은 지역 기반의 중고거래 플랫폼입니다.',
     image: 'https://buffso-react.netlify.app/logo10.png',
     count: 0,
-    createAt: '2024-10-19T13:30:00Z',
+    createdAt: '2024-10-19T13:30:00Z',
     updatedAt: '2024-10-19T13:30:00Z',
   },
 ];
