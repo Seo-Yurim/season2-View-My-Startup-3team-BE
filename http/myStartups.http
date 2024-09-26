@@ -1,0 +1,5 @@
+GET http://localhost:3000/api/startups/my-startups?page=2&limit=5
+
+###
+
+GET http://localhost:3000/api/startups/my-startups?search=코드잇
