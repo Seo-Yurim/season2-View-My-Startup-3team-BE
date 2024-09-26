@@ -1,6 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { assert } from "superstruct";
-import { CreateInvestment, PatchInvestment } from "../structs/investmentStruct";
+import {
+  CreateInvestment,
+  PatchInvestment,
+} from "../structs/investmentStruct.js";
 
 const prisma = new PrismaClient();
 
