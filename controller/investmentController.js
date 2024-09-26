@@ -9,9 +9,19 @@ const prisma = new PrismaClient();
 
 export const createInvestment = async (req, res) => {
   assert(req.body, CreateInvestment);
-  const { name, investAmount, comment, password } = req.body;
+  const { name, startupId, investAmount, comment, password } = req.body;
+
+  // startupId 검증: 해당 ID의 스타트업이 존재하는지 확인
+  const startupExists = await prisma.startup.findUnique({
+    where: { id: startupId },
+  });
+
+  if (!startupExists) {
+    return res.status(404).json({ error: "Startup not found" });
+  }
+
   const newInvestment = await prisma.mockInvestor.create({
-    data: { name, investAmount, comment, password },
+    data: { name, startupId, investAmount, comment, password },
   });
   res.status(201).json(newInvestment);
 };
@@ -20,7 +30,7 @@ export const patchInvestment = async (req, res) => {
   assert(req.body, PatchInvestment);
   const { id } = req.params;
   const investment = await prisma.mockInvestor.update({
-    where: { id },
+    where: { id: parseInt(id) },
     data: req.body,
   });
   res.json(investment);
@@ -29,7 +39,7 @@ export const patchInvestment = async (req, res) => {
 export const deleteInvestment = async (req, res) => {
   const { id } = req.params;
   await prisma.mockInvestor.delete({
-    where: { id },
+    where: { id: parseInt(id) },
   });
   res.status(204).json();
 };
@@ -46,12 +56,20 @@ export const getInvestments = async (req, res) => {
     case "investAmountHighest":
       orderBy = { investAmount: "desc" };
       break;
-    // case "actualInvestLowest":
-    //   orderBy = { createdAt: "asc" };
-    //   break;
-    // case "actualInvestHighest":
-    //   orderBy = { createdAt: "desc" };
-    //   break;
+    case "actualInvestLowest":
+      orderBy = {
+        startup: {
+          actualInvest: "asc",
+        },
+      };
+      break;
+    case "actualInvestHighest":
+      orderBy = {
+        startup: {
+          actualInvest: "desc",
+        },
+      };
+      break;
     default:
       orderBy = { investAmount: "desc" };
   }

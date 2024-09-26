@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-import { CATEGORIES, STARTUPS, MOCK_INVESTORS } from './mock.js';
+import { PrismaClient } from "@prisma/client";
+import { CATEGORIES, STARTUPS, MOCK_INVESTORS } from "./mock.js";
 
 const prisma = new PrismaClient();
 
@@ -16,7 +16,7 @@ async function main() {
   await prisma.startup.createMany({
     data: STARTUPS,
     skipDuplicates: true,
-  });``
+  });
 
   await prisma.mockInvestor.createMany({
     data: MOCK_INVESTORS,

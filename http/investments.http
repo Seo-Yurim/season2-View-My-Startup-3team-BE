@@ -3,13 +3,14 @@ Content-Type: application/json
 
 {
     "name": "신짱구",
+    "startupId": 2,
     "investAmount": 3000000,
     "comment": "이 기업만큼은 믿고 투자할 수 있습니다!",
     "password": "pw1234"
 }
 
 ###
-PATCH http://localhost:3000/api/investments
+PATCH http://localhost:3000/api/investments/1
 Content-Type: application/json
 
 {
@@ -17,7 +18,10 @@ Content-Type: application/json
 }
 
 ### 
-DELETE http://localhost:3000/api/investments
+DELETE http://localhost:3000/api/investments/11
 
 ###
 GET http://localhost:3000/api/investments
+
+###
+GET http://localhost:3000/api/investments?order=actualInvestHighest
