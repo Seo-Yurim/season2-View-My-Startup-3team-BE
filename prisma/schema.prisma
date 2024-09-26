@@ -26,7 +26,7 @@ model Startup {
   count         Int            @default(0)
   selectedAt    DateTime? // 선택된 시간
   image         String?
-  createAt      DateTime       @default(now())
+  createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   mockInvestors MockInvestor[]
 }

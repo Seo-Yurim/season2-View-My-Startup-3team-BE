@@ -1,0 +1,22 @@
+GET http://localhost:3000/api/startups/startup-list
+
+###
+GET http://localhost:3000/api/startups/startup-list?search=럭스로보
+
+###
+GET http://localhost:3000/api/startups/recent
+
+###
+POST http://localhost:3000/api/startups/my-startups/select
+Content-Type: application/json
+
+{
+  "id":1 
+}
+###
+POST http://localhost:3000/api/startups/comparison-startups/select
+Content-Type: application/json
+
+{
+  "id": [1,2,3,4]
+}
