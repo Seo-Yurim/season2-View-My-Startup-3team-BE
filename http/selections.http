@@ -1,0 +1,25 @@
+PATCH http://localhost:3000/api/selectios/my-startups
+Content-Type: application/json
+
+{
+  "id":1
+}
+###
+PATCH http://localhost:3000/api/selectios/comparison-startups
+Content-Type: application/json
+
+{
+  "id": [1,2,3,4]
+}
+
+###
+PATCH http://localhost:3000/api/selectios/unselect
+Content-Type: application/json
+
+{
+  "id":1 
+}
+
+###
+PATCH http://localhost:3000/api/selectios/reset
+Content-Type: application/json
