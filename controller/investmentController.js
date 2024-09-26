@@ -29,6 +29,20 @@ export const createInvestment = async (req, res) => {
 export const patchInvestment = async (req, res) => {
   assert(req.body, PatchInvestment);
   const { id } = req.params;
+  const { password } = req.body;
+
+  const investor = await prisma.mockInvestor.findUnique({
+    where: { id: parseInt(id) },
+  });
+
+  if (!investor) {
+    return res.status(404).json({ message: "투자자를 찾을 수 없습니다." });
+  }
+
+  if (password !== investor.password) {
+    return res.status(403).json({ message: "비밀번호가 일치하지 않습니다." });
+  }
+
   const investment = await prisma.mockInvestor.update({
     where: { id: parseInt(id) },
     data: req.body,
@@ -38,6 +52,20 @@ export const patchInvestment = async (req, res) => {
 
 export const deleteInvestment = async (req, res) => {
   const { id } = req.params;
+  const { password } = req.body;
+
+  const investor = await prisma.mockInvestor.findUnique({
+    where: { id: parseInt(id) },
+  });
+
+  if (!investor) {
+    return res.status(404).json({ message: "투자자를 찾을 수 없습니다." });
+  }
+
+  if (password !== investor.password) {
+    return res.status(403).json({ message: "비밀번호가 일치하지 않습니다." });
+  }
+
   await prisma.mockInvestor.delete({
     where: { id: parseInt(id) },
   });

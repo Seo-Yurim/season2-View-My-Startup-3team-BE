@@ -10,15 +10,21 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:3000/api/investments/1
+PATCH http://localhost:3000/api/investments/12
 Content-Type: application/json
 
 {
-    "name": "신형만"
+    "name": "봉미선",
+    "password": "pw1234"
 }
 
 ### 
-DELETE http://localhost:3000/api/investments/11
+DELETE http://localhost:3000/api/investments/12
+Content-Type: application/json
+
+{
+    "password": "pw1234"
+}
 
 ###
 GET http://localhost:3000/api/investments
