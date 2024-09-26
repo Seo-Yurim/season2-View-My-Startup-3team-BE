@@ -24,6 +24,7 @@ model Startup {
   employees     Int
   description   String         @db.Text // 기업 소개
   count         Int            @default(0)
+  selectedAt    DateTime? // 선택된 시간
   image         String?
   createAt      DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
