@@ -25,6 +25,7 @@ model Startup {
   description   String         @db.Text // 기업 소개
   count         Int            @default(0)
   selectedAt    DateTime? // 선택된 시간
+  isSelected    Boolean        @default(false) // 선택 상태 관리 
   image         String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
