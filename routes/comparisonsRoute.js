@@ -39,7 +39,7 @@ router.get(
 
 // 최근 선택된 스타트업 조회 API
 router.get(
-  "/recent",
+  "/recent-select",
   asyncHandler(async (req, res) => {
     const selectedStartup = await prisma.startup.findMany({
       where: {
@@ -58,7 +58,7 @@ router.get(
 );
 
 // 나의 스타트업 선택 API
-router.post(
+router.patch(
   "/my-startups/select",
   asyncHandler(async (req, res) => {
     const { id } = req.body;
@@ -68,6 +68,8 @@ router.post(
         count: {
           increment: 1,
         },
+        isSelected: true,
+        selectedAt: new Date(),
       },
     });
     res.send(startups);
@@ -75,7 +77,7 @@ router.post(
 );
 
 // 비교할 스타트업 선택 API
-router.post(
+router.patch(
   "/comparison-startups/select",
   asyncHandler(async (req, res) => {
     const { id } = req.body;
@@ -94,11 +96,55 @@ router.post(
             count: {
               increment: 1,
             },
+            isSelected: true,
+            selectedAt: new Date(),
           },
         });
       }),
     );
     res.send(updateStartups);
+  }),
+);
+
+// 선태 취소 API
+router.patch(
+  "/unselect",
+  asyncHandler(async (req, res) => {
+    const { id } = req.body;
+    const startup = await prisma.startup.findUnique({
+      where: { id },
+    });
+
+    if (!startup) {
+      return res.status(404).send({ message: "기업을 찾을 수 없습니다." });
+    }
+
+    if (startup.count > 0) {
+      const updateStartup = await prisma.startup.update({
+        where: { id },
+        data: {
+          count: {
+            decrement: 1,
+          },
+          isSelected: false,
+        },
+      });
+      res.send(updateStartup);
+    } else {
+      res.status(400).send({ message: "이미 취소된 기업입니다." });
+    }
+  }),
+);
+
+// 전체 선택 취소 및 초기화 API
+router.patch(
+  "/reset",
+  asyncHandler(async (req, res) => {
+    const updatStartup = await prisma.startup.updateMany({
+      where: { isSelected: true },
+      data: { isSelected: false },
+    });
+    res.send(updatStartup);
   }),
 );
 
