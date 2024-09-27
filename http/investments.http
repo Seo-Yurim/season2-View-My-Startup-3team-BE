@@ -30,7 +30,7 @@ Content-Type: application/json
 GET http://localhost:3000/api/investments
 
 ###
-GET http://localhost:3000/api/investments?order=actualInvestHighest
+GET http://localhost:3000/api/investments?order=investAmount&sort=asc
 
 ###
 GET http://localhost:3000/api/investments?page=2&limit=5
