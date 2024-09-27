@@ -2,24 +2,24 @@ POST http://localhost:3000/api/investments
 Content-Type: application/json
 
 {
-    "name": "신짱구",
-    "startupId": 2,
-    "investAmount": 3000000,
-    "comment": "이 기업만큼은 믿고 투자할 수 있습니다!",
+    "name": "신짱아",
+    "startupId": 1,
+    "investAmount": 5000000,
+    "comment": "성장 가능성이 높은 기업입니다!",
     "password": "pw1234"
 }
 
 ###
-PATCH http://localhost:3000/api/investments/12
+PATCH http://localhost:3000/api/investments/14
 Content-Type: application/json
 
 {
-    "name": "봉미선",
+    "investAmount": 4000000,
     "password": "pw1234"
 }
 
 ### 
-DELETE http://localhost:3000/api/investments/12
+DELETE http://localhost:3000/api/investments/14
 Content-Type: application/json
 
 {

@@ -23,17 +23,25 @@ export const createInvestment = async (req, res) => {
   const newInvestment = await prisma.mockInvestor.create({
     data: { name, startupId, investAmount, comment, password },
   });
+
+  await prisma.startup.update({
+    where: { id: startupId },
+    data: { simInvest: { increment: investAmount } },
+  });
+
   res.status(201).json(newInvestment);
 };
 
 export const patchInvestment = async (req, res) => {
   assert(req.body, PatchInvestment);
   const { id } = req.params;
-  const { password } = req.body;
+  const { password, investAmount } = req.body;
 
   const investor = await prisma.mockInvestor.findUnique({
     where: { id: parseInt(id) },
   });
+
+  const oldInvestmentAmount = investor.investAmount;
 
   if (!investor) {
     return res.status(404).json({ message: "투자자를 찾을 수 없습니다." });
@@ -47,6 +55,13 @@ export const patchInvestment = async (req, res) => {
     where: { id: parseInt(id) },
     data: req.body,
   });
+
+  const difference = investAmount - oldInvestmentAmount;
+  await prisma.startup.update({
+    where: { id: investor.startupId },
+    data: { simInvest: { increment: difference } },
+  });
+
   res.json(investment);
 };
 
@@ -69,6 +84,12 @@ export const deleteInvestment = async (req, res) => {
   await prisma.mockInvestor.delete({
     where: { id: parseInt(id) },
   });
+
+  await prisma.startup.update({
+    where: { id: investor.startupId },
+    data: { simInvest: { decrement: investor.investAmount } },
+  });
+
   res.status(204).json();
 };
 
