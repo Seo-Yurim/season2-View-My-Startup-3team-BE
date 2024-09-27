@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../prisma.js";
 
 export const getStartups = async (req, res) => {
   const { page = 1, limit = 10, order = 'createdAt', sort = 'desc', keyword = '' } = req.query;

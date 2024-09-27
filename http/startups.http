@@ -8,4 +8,7 @@ GET http://localhost:3000/api/startups?order=totalInvestment&sort=desc&page=2&li
 GET http://localhost:3000/api/startups?keyword=제공
 
 ###
+GET http://localhost:3000/api/startups/1
+
+###
 GET http://localhost:3000/api/startups/1?page=1&limit=2
