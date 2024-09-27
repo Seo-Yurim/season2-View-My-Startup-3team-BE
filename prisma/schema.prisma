@@ -24,12 +24,11 @@ model Startup {
   employees     Int
   description   String         @db.Text // 기업 소개
   count         Int            @default(0)
-  selectedAt    DateTime? // 선택된 시간
-  isSelected    Boolean        @default(false) // 선택 상태 관리 
   image         String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   mockInvestors MockInvestor[]
+  Selection     Selection[]
 }
 
 model Category {
@@ -48,4 +47,13 @@ model MockInvestor {
   password     String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Selection {
+  id         Int       @id @default(autoincrement())
+  userCookie String // 고유 사용자 쿠키 
+  selectedAt DateTime? // 선택된 시간
+  isSelected Boolean   @default(false) // 선택 상태 관리 
+  startup    Startup   @relation(fields: [startupId], references: [id])
+  startupId  Int
 }
