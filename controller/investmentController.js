@@ -103,9 +103,26 @@ export const getInvestments = async (req, res) => {
   }
 
   const investments = await prisma.mockInvestor.findMany({
+    select: {
+      startup: {
+        select: {
+          name: true,
+          description: true,
+          category: true,
+          actualInvest: true,
+          simInvest: true,
+        },
+      },
+    },
     orderBy,
     skip: offset,
     take: parseInt(pageSize),
   });
-  res.json(investments);
+
+  const rankedInvestments = investments.map((investment, index) => ({
+    ...investment,
+    rank: offset + index + 1,
+  }));
+
+  res.json(rankedInvestments);
 };
