@@ -183,29 +183,3 @@ export const getInvestments = async (req, res) => {
 
   res.json(rankedInvestments);
 };
-
-// 투자자 목록 조회
-export const getInvestors = async (req, res) => {
-  const { page = 1, limit = 5 } = req.query;
-  const offset = (page - 1) * limit;
-
-  // 투자자 목록 가져오기
-  const investors = await prisma.mockInvestor.findMany({
-    select: {
-      name: true,
-      investAmount: true,
-      comment: true,
-    },
-    orderBy: { investAmount: "desc" },
-    skip: offset,
-    take: parseInt(limit),
-  });
-
-  // 순위 계산
-  const rankedInvestors = investors.map((investor, index) => ({
-    ...investor,
-    rank: offset + index + 1,
-  }));
-
-  res.json(rankedInvestors);
-};
