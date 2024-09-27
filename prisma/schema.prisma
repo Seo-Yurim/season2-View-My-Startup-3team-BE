@@ -25,7 +25,7 @@ model Startup {
   description   String         @db.Text // 기업 소개
   count         Int            @default(0)
   image         String?
-  createAt      DateTime       @default(now())
+  createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   mockInvestors MockInvestor[]
 }
