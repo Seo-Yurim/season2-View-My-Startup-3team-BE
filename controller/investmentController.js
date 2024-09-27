@@ -132,29 +132,24 @@ export const deleteInvestment = async (req, res) => {
 
 // 투자 현황 목록 조회
 export const getInvestments = async (req, res) => {
-  const { page = 1, pageSize = 10, order = "investAmountHighest" } = req.query;
-  const offset = (page - 1) * pageSize;
+  const {
+    page = 1,
+    limit = 10,
+    order = "investAmount",
+    sort = "desc",
+  } = req.query;
+  const offset = (page - 1) * limit;
 
   // 투자 현황 목록 정렬 기준
   let orderBy;
   switch (order) {
-    case "investAmountLowest":
-      orderBy = { investAmount: "asc" };
+    case "investAmount":
+      orderBy = { investAmount: sort === "asc" ? "asc" : "desc" };
       break;
-    case "investAmountHighest":
-      orderBy = { investAmount: "desc" };
-      break;
-    case "actualInvestLowest":
+    case "actualInvest":
       orderBy = {
         startup: {
-          actualInvest: "asc",
-        },
-      };
-      break;
-    case "actualInvestHighest":
-      orderBy = {
-        startup: {
-          actualInvest: "desc",
+          actualInvest: sort === "asc" ? "asc" : "desc",
         },
       };
       break;
@@ -177,7 +172,7 @@ export const getInvestments = async (req, res) => {
     },
     orderBy,
     skip: offset,
-    take: parseInt(pageSize),
+    take: parseInt(limit),
   });
 
   // 순위 계산
@@ -191,8 +186,8 @@ export const getInvestments = async (req, res) => {
 
 // 투자자 목록 조회
 export const getInvestors = async (req, res) => {
-  const { page = 1, pageSize = 5 } = req.query;
-  const offset = (page - 1) * pageSize;
+  const { page = 1, limit = 5 } = req.query;
+  const offset = (page - 1) * limit;
 
   // 투자자 목록 가져오기
   const investors = await prisma.mockInvestor.findMany({
@@ -203,7 +198,7 @@ export const getInvestors = async (req, res) => {
     },
     orderBy: { investAmount: "desc" },
     skip: offset,
-    take: parseInt(pageSize),
+    take: parseInt(limit),
   });
 
   // 순위 계산

@@ -33,7 +33,10 @@ GET http://localhost:3000/api/investments
 GET http://localhost:3000/api/investments?order=actualInvestHighest
 
 ###
+GET http://localhost:3000/api/investments?page=2&limit=5
+
+###
 GET http://localhost:3000/api/investments/investors
 
 ###
-GET http://localhost:3000/api/investments/investors?page=2&pageSize=3
+GET http://localhost:3000/api/investments/investors?page=2&limit=3
