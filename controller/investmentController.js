@@ -20,16 +20,22 @@ export const createInvestment = async (req, res) => {
     return res.status(404).json({ error: "Startup not found" });
   }
 
-  const newInvestment = await prisma.mockInvestor.create({
-    data: { name, startupId, investAmount, comment, password },
-  });
+  try {
+    const newInvestment = await prisma.$transaction(async (prisma) => {
+      const investment = await prisma.mockInvestor.create({
+        data: { name, startupId, investAmount, comment, password },
+      });
 
-  await prisma.startup.update({
-    where: { id: startupId },
-    data: { simInvest: { increment: investAmount } },
-  });
-
-  res.status(201).json(newInvestment);
+      await prisma.startup.update({
+        where: { id: startupId },
+        data: { simInvest: { increment: investAmount } },
+      });
+      return investment;
+    });
+    res.status(201).json(newInvestment);
+  } catch (err) {
+    res.status(500).json({ error: "투자 생성 중 오류가 발생했습니다." });
+  }
 };
 
 export const patchInvestment = async (req, res) => {
@@ -41,8 +47,6 @@ export const patchInvestment = async (req, res) => {
     where: { id: parseInt(id) },
   });
 
-  const oldInvestmentAmount = investor.investAmount;
-
   if (!investor) {
     return res.status(404).json({ message: "투자자를 찾을 수 없습니다." });
   }
@@ -51,18 +55,26 @@ export const patchInvestment = async (req, res) => {
     return res.status(403).json({ message: "비밀번호가 일치하지 않습니다." });
   }
 
-  const investment = await prisma.mockInvestor.update({
-    where: { id: parseInt(id) },
-    data: req.body,
-  });
+  try {
+    const investment = await prisma.$transaction(async (prisma) => {
+      const oldInvestmentAmount = investor.investAmount;
+      const updateInvestment = await prisma.mockInvestor.update({
+        where: { id: parseInt(id) },
+        data: req.body,
+      });
 
-  const difference = investAmount - oldInvestmentAmount;
-  await prisma.startup.update({
-    where: { id: investor.startupId },
-    data: { simInvest: { increment: difference } },
-  });
+      const difference = investAmount - oldInvestmentAmount;
+      await prisma.startup.update({
+        where: { id: investor.startupId },
+        data: { simInvest: { increment: difference } },
+      });
+      return updateInvestment;
+    });
 
-  res.json(investment);
+    res.json(investment);
+  } catch (err) {
+    res.status(500).json({ error: "투자 수정 중 오류가 발생했습니다." });
+  }
 };
 
 export const deleteInvestment = async (req, res) => {
@@ -81,16 +93,21 @@ export const deleteInvestment = async (req, res) => {
     return res.status(403).json({ message: "비밀번호가 일치하지 않습니다." });
   }
 
-  await prisma.mockInvestor.delete({
-    where: { id: parseInt(id) },
-  });
+  try {
+    await prisma.$transaction(async (prisma) => {
+      await prisma.mockInvestor.delete({
+        where: { id: parseInt(id) },
+      });
 
-  await prisma.startup.update({
-    where: { id: investor.startupId },
-    data: { simInvest: { decrement: investor.investAmount } },
-  });
-
-  res.status(204).json();
+      await prisma.startup.update({
+        where: { id: investor.startupId },
+        data: { simInvest: { decrement: investor.investAmount } },
+      });
+    });
+    res.status(204).json();
+  } catch (err) {
+    res.status(500).json({ error: "투자 삭제 중 오류가 발생했습니다." });
+  }
 };
 
 export const getInvestments = async (req, res) => {
