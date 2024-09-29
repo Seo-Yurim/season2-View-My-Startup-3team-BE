@@ -14,20 +14,23 @@ datasource db {
 }
 
 model Startup {
-  id            Int            @id @default(autoincrement())
-  name          String         @unique
-  category      Category       @relation(fields: [categoryId], references: [id])
-  categoryId    Int
-  actualInvest  Int            @default(0) // 실제 누적 투자 금액
-  simInvest     Int            @default(0) // 모의 누적 투자 금액
-  revenue       Int // 매출액
-  employees     Int
-  description   String         @db.Text // 기업 소개
-  count         Int            @default(0)
-  image         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  mockInvestors MockInvestor[]
+  id             Int            @id @default(autoincrement())
+  name           String         @unique
+  category       Category       @relation(fields: [categoryId], references: [id])
+  categoryId     Int
+  actualInvest   BigInt         @default(0) // 실제 누적 투자 금액
+  simInvest      BigInt         @default(0) // 모의 누적 투자 금액
+  revenue        Int // 매출액
+  employees      Int
+  description    String         @db.Text // 기업 소개
+  selectedCount  Int            @default(0)
+  compraredCount Int            @default(0)
+  image          String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  mockInvestors  MockInvestor[]
+  Selection      Selection[]
+  Comparison     Comparison[]
 }
 
 model Category {
@@ -46,4 +49,24 @@ model MockInvestor {
   password     String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Selection {
+  id         Int      @id @default(autoincrement())
+  sessionId  String
+  isSelected Boolean  @default(true)
+  startup    Startup  @relation(fields: [startupId], references: [id])
+  startupId  Int
+  createdAt  DateTime @default(now()) // 나의 기업 선택 시간
+  updatedAt  DateTime @updatedAt
+}
+
+model Comparison {
+  id         Int      @id @default(autoincrement())
+  sessionId  String
+  isCompared Boolean  @default(true)
+  startup    Startup  @relation(fields: [startupId], references: [id])
+  startupId  Int
+  createdAt  DateTime @default(now()) // 비교 기업 선택 시간
+  updatedAt  DateTime @updatedAt
 }
