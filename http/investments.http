@@ -1,0 +1,36 @@
+POST http://localhost:3000/api/investments
+Content-Type: application/json
+
+{
+    "name": "신짱아",
+    "startupId": 1,
+    "investAmount": 5000000,
+    "comment": "성장 가능성이 높은 기업입니다!",
+    "password": "pw1234"
+}
+
+###
+PATCH http://localhost:3000/api/investments/14
+Content-Type: application/json
+
+{
+    "investAmount": 4000000,
+    "password": "pw1234"
+}
+
+### 
+DELETE http://localhost:3000/api/investments/14
+Content-Type: application/json
+
+{
+    "password": "pw1234"
+}
+
+###
+GET http://localhost:3000/api/investments
+
+###
+GET http://localhost:3000/api/investments?order=actual_invest&sort=asc
+
+###
+GET http://localhost:3000/api/investments?page=2&limit=5
