@@ -135,7 +135,7 @@ export const getInvestments = async (req, res) => {
   const {
     page = 1,
     limit = 10,
-    order = "investAmount",
+    order = "invest_amount",
     sort = "desc",
   } = req.query;
   const offset = (page - 1) * limit;
@@ -143,10 +143,10 @@ export const getInvestments = async (req, res) => {
   // 투자 현황 목록 정렬 기준
   let orderBy;
   switch (order) {
-    case "investAmount":
+    case "invest_amount":
       orderBy = { investAmount: sort === "asc" ? "asc" : "desc" };
       break;
-    case "actualInvest":
+    case "actual_invest":
       orderBy = {
         startup: {
           actualInvest: sort === "asc" ? "asc" : "desc",
