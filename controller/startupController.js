@@ -1,7 +1,7 @@
 import prisma from "../utils/prismaClient.js";
 
 export const getStartups = async (req, res) => {
-  const { page = 1, limit = 10, order = 'createdAt', sort = 'desc', keyword = '' } = req.query;
+  const { page = 1, limit = 10, order = 'total_investment', sort = 'desc', keyword = '' } = req.query;
 
   const safeSort = ['asc', 'desc'].includes(sort) ? sort : 'desc';
   const offset = (page - 1) * limit;

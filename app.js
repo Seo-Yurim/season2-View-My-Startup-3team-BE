@@ -1,7 +1,14 @@
 import * as dotenv from 'dotenv'
 dotenv.config();
+
+// BigInt의 JSON 변환 방식 오버라이드
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
+
 import express from 'express'
 import cors from 'cors'
+
 import startupsRoute from './routes/startupsRoute.js';
 import investmentsRoute from './routes/investmentsRoute.js';
 import comparisonsRoute from './routes/comparisonsRoute.js';
