@@ -18,8 +18,8 @@ model Startup {
   name          String         @unique
   category      Category       @relation(fields: [categoryId], references: [id])
   categoryId    Int
-  actualInvest  BigInt         @default(0) // 실제 누적 투자 금액
-  simInvest     BigInt         @default(0) // 모의 누적 투자 금액
+  actualInvest  Int            @default(0) // 실제 누적 투자 금액
+  simInvest     Int            @default(0) // 모의 누적 투자 금액
   revenue       Int // 매출액
   employees     Int
   description   String         @db.Text // 기업 소개
