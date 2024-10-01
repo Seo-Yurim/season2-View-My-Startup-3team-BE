@@ -1,10 +1,5 @@
-GET http://localhost:3000/api/startups/startup-list
+###
+GET http://localhost:3000/api/comparisons/recent-select
 
 ###
-GET http://localhost:3000/api/startups/startup-list?search=럭스로보
-
-###
-GET http://localhost:3000/api/startups/recent-select
-
-###
-GET http://localhost:3000/api/startups/compare
+GET http://localhost:3000/api/comparisons/compare

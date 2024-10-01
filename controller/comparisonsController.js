@@ -2,9 +2,12 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const getStartupList = async (req, res) => {
-  const { search = "", page = 1, limit = 10 } = req.query;
+// 최근 선택된 스타트업 조회 API
+export const getStartup = async (req, res) => {
+  const { search = "", page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
+  const sessionId = req.session.sessionId;
+
   const totalCount = await prisma.startup.count({
     where: {
       name: {
@@ -13,6 +16,7 @@ export const getStartupList = async (req, res) => {
       },
     },
   });
+
   const startups = await prisma.startup.findMany({
     where: {
       name: {
@@ -23,46 +27,113 @@ export const getStartupList = async (req, res) => {
     skip: skip,
     take: parseInt(limit),
   });
+
+  const selectedStartups = await prisma.selection.findMany({
+    where: {
+      sessionId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 5,
+    include: {
+      startup: true,
+    },
+  });
+
+  const comparedStartups = await prisma.comparison.findMany({
+    where: {
+      sessionId,
+      isCompared: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 5,
+    include: {
+      startup: true,
+    },
+  });
+
   res.send({
     currentPage: parseInt(page),
     totalPages: Math.ceil(totalCount / limit),
     totalCount,
     list: startups,
+    selected: selectedStartups,
+    compared: comparedStartups,
   });
 };
 
-export const getRecentSelect = async (req, res) => {
-  const selectedStartup = await prisma.startup.findMany({
-    where: {
-      count: {
-        gt: 0,
-      },
-    },
-    orderBy: {
-      selectedAt: "desc",
-    },
-    take: 5,
-  });
-
-  res.send(selectedStartup);
-};
-
+// 선택한 스타트업 비교 결과 조회 API
 export const getCompare = async (req, res) => {
   const { orderBy = "asc", sortBy = "actualInvest" } = req.query;
-  const orderByOptions = {
-    actualInvest: orderBy === "asc" ? "asc" : "desc",
-    revenue: orderBy === "asc" ? "asc" : "desc",
-    employees: orderBy === "asc" ? "asc" : "desc",
-  };
+  const sessionId = req.session.sessionId;
 
-  const startup = await prisma.startup.findMany({
-    where: {
-      isSelected: true,
-    },
-    orderBy: {
-      [sortBy]: orderByOptions[sortBy],
-    },
+  const validSortFields = ["actualInvest", "revenue", "employees"];
+  if (!validSortFields.includes(sortBy)) {
+    return res.status(400).send({ message: "유효하지 않은 정렬 필드입니다." });
+  }
+
+  const [selection, comparisons] = await Promise.all([
+    prisma.selection.findFirst({
+      where: {
+        sessionId,
+        isSelected: true,
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+      select: {
+        startup: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            category: true,
+            actualInvest: true,
+            revenue: true,
+            employees: true,
+          },
+        },
+      },
+    }),
+    prisma.comparison.findMany({
+      where: {
+        sessionId,
+        isCompared: true,
+      },
+      select: {
+        startup: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            category: true,
+            actualInvest: true,
+            revenue: true,
+            employees: true,
+          },
+        },
+      },
+    }),
+  ]);
+
+  const selectedResult = selection.startup;
+  const comparisonResults = comparisons.map((comparison) => comparison.startup);
+
+  const allResults = [selectedResult, ...comparisonResults];
+
+  allResults.sort((a, b) => {
+    const aValue = a[sortBy];
+    const bValue = b[sortBy];
+
+    if (orderBy === "asc") {
+      return aValue - bValue;
+    } else {
+      return bValue - aValue;
+    }
   });
 
-  res.send(startup);
+  res.send(allResults);
 };
