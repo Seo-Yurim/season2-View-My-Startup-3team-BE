@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 // 나의 스타트업 선택 API
 export const patchMyStartups = async (req, res) => {
   const { id, sessionId } = req.body;
-  console.log(sessionId);
 
   const [updateStartup, existingSelection] = await Promise.all([
     prisma.startup.update({
@@ -47,7 +46,6 @@ export const patchMyStartups = async (req, res) => {
 // 비교할 스타트업 여러개 선택 API
 export const patchComparisonStartups = async (req, res) => {
   const { ids, sessionId } = req.body;
-  console.log(ids);
 
   if (!Array.isArray(ids) || ids.length < 1 || ids.length > 5) {
     return res
