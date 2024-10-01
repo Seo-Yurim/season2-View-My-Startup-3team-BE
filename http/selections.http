@@ -1,0 +1,43 @@
+###
+PATCH http://localhost:3000/api/selections/my-startups
+Content-Type: application/json
+
+{
+  "id":1,
+  "sessionId": "g26s9z2k5q"
+}
+
+###
+PATCH http://localhost:3000/api/selections/comparison-startups
+Content-Type: application/json
+
+{
+  "ids": [2,3,4,5],
+  "sessionId": "g26s9z2k5q"
+}
+
+###
+PATCH http://localhost:3000/api/selections/compare-unselect
+Content-Type: application/json
+
+{
+  "id":2,
+  "sessionId": "p67rmgtv3i"
+}
+
+###
+PATCH http://localhost:3000/api/selections/my-unselect
+Content-Type: application/json
+
+{
+  "id":2,
+  "sessionId": "p67rmgtv3i"
+}
+
+###
+PATCH http://localhost:3000/api/selections/reset
+Content-Type: application/json
+
+{
+  "sessionId": "p67rmgtv3i"
+}

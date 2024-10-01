@@ -2,14 +2,19 @@
   Warnings:
 
   - You are about to drop the column `count` on the `Startup` table. All the data in the column will be lost.
+  - You are about to drop the `UserSelection` table. If the table is not empty, all the data it contains will be lost.
 
 */
+-- DropForeignKey
+ALTER TABLE "UserSelection" DROP CONSTRAINT "UserSelection_startupId_fkey";
+
 -- AlterTable
 ALTER TABLE "Startup" DROP COLUMN "count",
-ADD COLUMN     "compraredCount" INTEGER NOT NULL DEFAULT 0,
-ADD COLUMN     "selectedCount" INTEGER NOT NULL DEFAULT 0,
-ALTER COLUMN "actualInvest" SET DATA TYPE BIGINT,
-ALTER COLUMN "simInvest" SET DATA TYPE BIGINT;
+ADD COLUMN     "comparedCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "selectedCount" INTEGER NOT NULL DEFAULT 0;
+
+-- DropTable
+DROP TABLE "UserSelection";
 
 -- CreateTable
 CREATE TABLE "Selection" (

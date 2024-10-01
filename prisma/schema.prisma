@@ -54,8 +54,8 @@ model MockInvestor {
 model Selection {
   id         Int      @id @default(autoincrement())
   sessionId  String
-  isSelected Boolean  @default(true)
-  startup    Startup  @relation(fields: [startupId], references: [id])
+  isSelected Boolean  @default(false)
+  startup    Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
   startupId  Int
   createdAt  DateTime @default(now()) // 나의 기업 선택 시간
   updatedAt  DateTime @updatedAt
@@ -64,8 +64,8 @@ model Selection {
 model Comparison {
   id         Int      @id @default(autoincrement())
   sessionId  String
-  isCompared Boolean  @default(true)
-  startup    Startup  @relation(fields: [startupId], references: [id])
+  isCompared Boolean  @default(false)
+  startup    Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
   startupId  Int
   createdAt  DateTime @default(now()) // 비교 기업 선택 시간
   updatedAt  DateTime @updatedAt
