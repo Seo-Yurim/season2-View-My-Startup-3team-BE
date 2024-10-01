@@ -15,7 +15,7 @@ router.patch("/my-startups", asyncHandler(patchMyStartups));
 // 비교할 스타트업 선택 API
 router.patch("/comparison-startups", asyncHandler(patchComparisonStartups));
 
-// 선태 취소 API
+// 비교할 기업 선태 취소 API
 router.patch("/unselect", asyncHandler(patchUnselect));
 
 // 전체 선택 취소 및 초기화 API

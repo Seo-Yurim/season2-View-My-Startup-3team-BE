@@ -1,25 +1,36 @@
-PATCH http://localhost:3000/api/selectios/my-startups
+GET http://localhost:3000/api/session
+
+###
+PATCH http://localhost:3000/api/selections/my-startups
 Content-Type: application/json
 
 {
-  "id":1
+  "id":1,
+  "sessionId": "g26s9z2k5q"
 }
+
 ###
-PATCH http://localhost:3000/api/selectios/comparison-startups
+PATCH http://localhost:3000/api/selections/comparison-startups
 Content-Type: application/json
 
 {
-  "id": [1,2,3,4]
+  "ids": [2,3,4,5],
+  "sessionId": "g26s9z2k5q"
 }
 
 ###
-PATCH http://localhost:3000/api/selectios/unselect
+PATCH http://localhost:3000/api/selections/unselect
 Content-Type: application/json
 
 {
-  "id":1 
+  "id":2,
+  "sessionId": "p67rmgtv3i"
 }
 
 ###
-PATCH http://localhost:3000/api/selectios/reset
+PATCH http://localhost:3000/api/selections/reset
 Content-Type: application/json
+
+{
+  "sessionId": "p67rmgtv3i"
+}
