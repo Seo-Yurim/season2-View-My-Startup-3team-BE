@@ -7,7 +7,6 @@
     "express-session": "^1.18.0",
     "is-email": "^1.0.2",
     "is-uuid": "^1.0.2",
-    "json-bigint": "^1.0.0",
     "superstruct": "^1.0.3"
   },
   "devDependencies": {
