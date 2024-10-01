@@ -1,5 +1,3 @@
-GET http://localhost:3000/api/session
-
 ###
 PATCH http://localhost:3000/api/selections/my-startups
 Content-Type: application/json
@@ -19,7 +17,16 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:3000/api/selections/unselect
+PATCH http://localhost:3000/api/selections/compare-unselect
+Content-Type: application/json
+
+{
+  "id":2,
+  "sessionId": "p67rmgtv3i"
+}
+
+###
+PATCH http://localhost:3000/api/selections/my-unselect
 Content-Type: application/json
 
 {

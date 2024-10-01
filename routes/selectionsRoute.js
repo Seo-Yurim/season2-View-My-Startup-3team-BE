@@ -3,7 +3,8 @@ import asyncHandler from "../middleware/asyncHandler.js";
 import {
   patchMyStartups,
   patchComparisonStartups,
-  patchUnselect,
+  patchCompareUnselect,
+  patchMyUnselect,
   patchReset,
 } from "../controller/selectionsController.js";
 
@@ -15,8 +16,11 @@ router.patch("/my-startups", asyncHandler(patchMyStartups));
 // 비교할 스타트업 선택 API
 router.patch("/comparison-startups", asyncHandler(patchComparisonStartups));
 
-// 비교할 기업 선태 취소 API
-router.patch("/unselect", asyncHandler(patchUnselect));
+// 나의 스타트업 선택 취소 API
+router.patch("/my-unselect", asyncHandler(patchMyStartups));
+
+// 비교할 스타트업 선태 취소 API
+router.patch("/compare-unselect", asyncHandler(patchCompareUnselect));
 
 // 전체 선택 취소 및 초기화 API
 router.patch("/reset", asyncHandler(patchReset));

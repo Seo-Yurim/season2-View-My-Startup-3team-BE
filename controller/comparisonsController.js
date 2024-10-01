@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 export const getStartup = async (req, res) => {
   const { search = "", page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
-  const sessionId = req.session.sessionId;
+  const sessionId = req.body;
 
   const totalCount = await prisma.startup.count({
     where: {
@@ -68,7 +68,7 @@ export const getStartup = async (req, res) => {
 // 선택한 스타트업 비교 결과 조회 API
 export const getCompare = async (req, res) => {
   const { orderBy = "asc", sortBy = "actualInvest" } = req.query;
-  const sessionId = req.session.sessionId;
+  const sessionId = req.body;
 
   const validSortFields = ["actualInvest", "revenue", "employees"];
   if (!validSortFields.includes(sortBy)) {

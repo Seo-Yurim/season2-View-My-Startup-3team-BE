@@ -4,8 +4,7 @@ const prisma = new PrismaClient();
 
 // 나의 스타트업 선택 API
 export const patchMyStartups = async (req, res) => {
-  const { id } = req.body;
-  const sessionId = req.session.sessionId;
+  const { id, sessionId } = req.body;
   console.log(sessionId);
 
   const [updateStartup, existingSelection] = await Promise.all([
@@ -47,11 +46,10 @@ export const patchMyStartups = async (req, res) => {
 
 // 비교할 스타트업 여러개 선택 API
 export const patchComparisonStartups = async (req, res) => {
-  const { ids } = req.body;
+  const { ids, sessionId } = req.body;
   console.log(ids);
-  const sessionId = req.session.sessionId;
 
-  if (!Array.isArray(ids) || ids.length < 1 || ids > 5) {
+  if (!Array.isArray(ids) || ids.length < 1 || ids.length > 5) {
     return res
       .status(400)
       .send({ message: "1개에서 5개 사이의 스타트업을 골라야 합니다." });
@@ -108,10 +106,42 @@ export const patchComparisonStartups = async (req, res) => {
   res.send({ updateStartups, newOrUpdateComparisons });
 };
 
+// 나의 기업 선택 취소 API
+export const patchMyUnselect = async (req, res) => {
+  const { id, sessionId } = req.body;
+
+  const startup = await prisma.startup.findUnique({
+    where: { id },
+  });
+
+  if (!startup) {
+    return res.status(404).send({ message: "기업을 찾을 수 없습니다." });
+  }
+
+  const selection = await prisma.selection.findFirst({
+    where: {
+      sessionId: sessionId,
+      startupId: id,
+      isSelected: true,
+    },
+  });
+
+  const updateSelection = await prisma.selection.update({
+    where: {
+      id: selection.id,
+    },
+    data: {
+      isSelected: false,
+      updatedAt: new Date(),
+    },
+  });
+
+  res.send(updateSelection);
+};
+
 // 비교할 기업 선태 취소 API
-export const patchUnselect = async (req, res) => {
-  const { id } = req.body;
-  const sessionId = req.session.sessionId;
+export const patchCompareUnselect = async (req, res) => {
+  const { id, sessionId } = req.body;
 
   const startup = await prisma.startup.findUnique({
     where: { id },
@@ -144,7 +174,7 @@ export const patchUnselect = async (req, res) => {
 
 // 전체 선택 취소 및 초기화 API
 export const patchReset = async (req, res) => {
-  const sessionId = req.session.sessionId;
+  const { sessionId } = req.body;
 
   await Promise.all([
     prisma.selection.updateMany({
