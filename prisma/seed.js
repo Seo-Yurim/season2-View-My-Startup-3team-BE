@@ -4,6 +4,8 @@ import { CATEGORIES, STARTUPS, MOCK_INVESTORS } from "./mock.js";
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.selection.deleteMany(); // 먼저 Selection 데이터 삭제
+  await prisma.comparison.deleteMany(); // 다음으로 Comparison 데이터 삭제
   await prisma.mockInvestor.deleteMany();
   await prisma.startup.deleteMany();
   await prisma.category.deleteMany();
