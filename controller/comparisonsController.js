@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 export const getStartup = async (req, res) => {
   const { search = "", page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
-  const { sessionId } = req.body;
 
   const totalCount = await prisma.startup.count({
     where: {
@@ -26,32 +25,13 @@ export const getStartup = async (req, res) => {
     },
     skip: skip,
     take: parseInt(limit),
-  });
-
-  const selectedStartups = await prisma.selection.findMany({
-    where: {
-      sessionId,
+    select: {
+      image: true,
+      name: true,
+      category: true,
     },
     orderBy: {
-      createdAt: "desc",
-    },
-    take: 5,
-    include: {
-      startup: true,
-    },
-  });
-
-  const comparedStartups = await prisma.comparison.findMany({
-    where: {
-      sessionId,
-      isCompared: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: 5,
-    include: {
-      startup: true,
+      updatedAt: "desc",
     },
   });
 
@@ -60,8 +40,6 @@ export const getStartup = async (req, res) => {
     totalPages: Math.ceil(totalCount / limit),
     totalCount,
     list: startups,
-    selected: selectedStartups,
-    compared: comparedStartups,
   });
 };
 
