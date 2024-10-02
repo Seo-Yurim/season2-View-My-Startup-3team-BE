@@ -32,12 +32,23 @@ export const getStartups = async (req, res) => {
     orderBy,
     skip,
     take,
+    include: {
+      category: true, // Category 테이블과의 관계를 포함
+    }
   });
 
   const totalCount = await prisma.startup.count({ where });
 
+  const formattedStartups = startups.map(startup => {
+    const { category, ...rest } = startup;    // category 객체 제외
+    return {
+      ...rest,
+      categoryName: category.category,// categoryName 추가
+    }
+  })
+
   res.send({
-    list: startups,
+    list: formattedStartups,
     totalCount: totalCount
   });
 };
@@ -60,14 +71,22 @@ export const getStartupById = async (req, res) => {
     where: { id: numId },
     include: {
       mockInvestors: {
-        orderBy:  {[order]: sort },
+        orderBy:  { [order]: sort },
         skip,
         take,
       },
+      category: true, // Startup 의 category 관계 포함
     },
   });
   if (!startup) {
     return res.status(404).send({message: 'No startup found with given ID'});
+  }
+  
+  const { category, mockInvestors, ...rest } = startup;
+  const formattedStartup = {
+    ...rest,
+    categoryName: category.category,
+    mockInvestors,
   }
   // 전체 투자자수 계산
   const mockInvestorsCount = await prisma.mockInvestor.count({
@@ -75,7 +94,7 @@ export const getStartupById = async (req, res) => {
   });
   res.send({
     startup: {
-      ...startup,
+      ...formattedStartup,
       mockInvestorsCount,    
     },
   });
