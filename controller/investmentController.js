@@ -162,24 +162,19 @@ export const getInvestments = async (req, res) => {
     select: {
       startup: {
         select: {
+          image: true,
           name: true,
           description: true,
           category: true,
           actualInvest: true,
-          simInvest: true,
         },
       },
+      investAmount: true,
     },
     orderBy,
     skip: offset,
     take: parseInt(limit),
   });
 
-  // 순위 계산
-  const rankedInvestments = investments.map((investment, index) => ({
-    ...investment,
-    rank: offset + index + 1,
-  }));
-
-  res.json(rankedInvestments);
+  res.json(investments);
 };
