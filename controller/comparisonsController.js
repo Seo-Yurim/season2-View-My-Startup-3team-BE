@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 export const getStartup = async (req, res) => {
   const { search = "", page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
-  const sessionId = req.body;
+  const { sessionId } = req.body;
 
   const totalCount = await prisma.startup.count({
     where: {
