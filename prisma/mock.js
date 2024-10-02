@@ -10,7 +10,7 @@ export const STARTUPS = [
     name: "코드잇",
     categoryId: 1,
     actualInvest: BigInt(4000000000),
-    simInvest: BigInt(3000000000),
+    simInvest: BigInt(4000000000),
     revenue: BigInt(1200000000),
     employees: 50,
     description:
@@ -81,7 +81,7 @@ export const STARTUPS = [
       "프로그래밍, 영상편집, UX/UI, 마케팅, 데이터 분석, 엑셀강의, The RED, 국비지원 교육과정을 제공하는 플랫폼입니다.",
     selectedCount: 0,
     comparedCount: 0,
-    image: "http://genys.kr/z/startups/images/logo5.png",
+    image: "http://genys.kr/z/startups/images/logo_fastcampus.png",
     createdAt: "2024-09-05T11:00:00Z",
     updatedAt: "2024-09-05T11:00:00Z",
   },
