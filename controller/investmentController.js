@@ -146,6 +146,13 @@ export const getInvestments = async (req, res) => {
     case "invest_amount":
       orderBy = { investAmount: sort === "asc" ? "asc" : "desc" };
       break;
+    case "sim_invest":
+      orderBy = {
+        startup: {
+          simInvest: sort === "asc" ? "asc" : "desc",
+        },
+      };
+      break;
     case "actual_invest":
       orderBy = {
         startup: {
@@ -162,10 +169,12 @@ export const getInvestments = async (req, res) => {
     select: {
       startup: {
         select: {
+          id: true,
           image: true,
           name: true,
           description: true,
           category: true,
+          simInvest: true,
           actualInvest: true,
         },
       },
@@ -176,5 +185,7 @@ export const getInvestments = async (req, res) => {
     take: parseInt(limit),
   });
 
-  res.json(investments);
+  const totalCount = await prisma.mockInvestor.count();
+
+  res.json({ list: investments, totalCount: totalCount });
 };
