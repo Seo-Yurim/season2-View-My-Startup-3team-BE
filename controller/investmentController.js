@@ -135,17 +135,15 @@ export const getInvestments = async (req, res) => {
   const {
     page = 1,
     limit = 10,
-    order = "invest_amount",
+    order = "sim_invest",
     sort = "desc",
   } = req.query;
+
   const offset = (page - 1) * limit;
 
   // 투자 현황 목록 정렬 기준
   let orderBy;
   switch (order) {
-    case "invest_amount":
-      orderBy = { investAmount: sort === "asc" ? "asc" : "desc" };
-      break;
     case "sim_invest":
       orderBy = {
         startup: {
@@ -161,7 +159,7 @@ export const getInvestments = async (req, res) => {
       };
       break;
     default:
-      orderBy = { investAmount: "desc" };
+      orderBy = { startup: { simInvest: "desc" } };
   }
 
   // 투자 현황 목록 가져오기
@@ -178,14 +176,28 @@ export const getInvestments = async (req, res) => {
           actualInvest: true,
         },
       },
-      investAmount: true,
+      id: true,
     },
     orderBy,
-    skip: offset,
-    take: parseInt(limit),
   });
 
-  const totalCount = await prisma.mockInvestor.count();
+  // 기업 중복 제거
+  const filteredInvestments = [];
+  const existCompanies = new Set();
 
-  res.json({ list: investments, totalCount: totalCount });
+  investments.forEach((item) => {
+    if (!existCompanies.has(item.startup.name)) {
+      existCompanies.add(item.startup.name);
+      filteredInvestments.push(item);
+    }
+  });
+
+  // 페이지네이션
+  const paginatedInvestments = filteredInvestments.slice(
+    offset,
+    offset + parseInt(limit),
+  );
+  const totalCount = filteredInvestments.length;
+
+  res.json({ list: paginatedInvestments, totalCount });
 };
