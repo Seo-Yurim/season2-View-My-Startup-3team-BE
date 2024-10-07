@@ -5,7 +5,8 @@ export const getStartups = async (req, res) => {
     page = 1, 
     limit = 10, 
     order = 'total_investment', 
-    sort = 'desc', keyword = '' 
+    sort = 'desc', 
+    keyword = '' 
   } = req.query;
 
   const safeSort = ['asc', 'desc'].includes(sort) ? sort : 'desc';
@@ -20,7 +21,11 @@ export const getStartups = async (req, res) => {
     createdAt: 'createdAt',
   };
   const orderField = orderMapping[order] || 'createdAt'; 
-  const orderBy = { [orderField]: safeSort };
+  // 1차 정렬(orderField), 2차 정렬(id) 설정
+  const orderBy = [
+    { [orderField]: safeSort }, 
+    { id: 'asc' }  // 동점일 경우 id로 2차 정렬
+  ];
 
   const where = {
     AND: [
@@ -129,6 +134,7 @@ export const getStartupById = async (req, res) => {
   const validSortValues = ['asc', 'desc'];
   const orderField = orderMapping[order] || 'investAmount';
   const sortOrder = validSortValues.includes(sort) ? sort : 'desc';
+  const orderBy = [{ [orderField]: sortOrder }, { id: 'asc' }]; // 2차 정렬로 id 추가
 
   const numId = parseInt(id);
 
@@ -157,7 +163,7 @@ export const getStartupById = async (req, res) => {
         ],
       }),
     },
-    orderBy: { [orderField]: sortOrder },
+    orderBy,
     select: {
       id: true,
       [orderField]: true,
@@ -196,7 +202,7 @@ export const getStartupById = async (req, res) => {
         ],
       }),
     },
-    orderBy: { [orderField]: sortOrder },
+    orderBy,
     skip,
     take,
     select: {
@@ -237,62 +243,118 @@ export const getStartupById = async (req, res) => {
   });
 };
 
+// ranking 위아래 2개씩 포함 5개 응답
+export const getStartupRank = async (req, res) => {
+  const { 
+    order = 'revenue', sort = 'desc' 
+  }                       = req.query;
+  const { id: startupId } = req.params;
 
-/*
-export const getStartupById = async (req, res) => {
-  const { page = 1, limit = 10, order = 'invest_amount', sort = 'desc', keyword = '' } = req.query;
-
-  const offset = (page - 1) * limit;
-  const skip = offset;
-  const take = parseInt(limit);
-
-  const { id } = req.params;
-
-  if(isNaN(id)) {
-    return res.status(400).send({ message: 'Invalid ID format. ID must be a number' });
+  // startupId가 숫자가 아니면 에러 처리
+  if (isNaN(Number(startupId))) {
+    return res
+      .status(400)
+      .send({ message: 'Invalid ID format. ID must be a number' });
   }
+
+  const safeSort = ['asc', 'desc'].includes(sort) ? sort : 'desc';
 
   const orderMapping = {
-    investment_amount: 'investAmount',
-    createdAt: 'createdAt',
-    name: 'name',
+    revenue: 'revenue',
+    employee_count: 'employees',
   };
+  const orderField = orderMapping[order] || 'revenue'; 
+  const orderBy = [{ [orderField]: safeSort }, { id: 'asc' }];  // 1차 정렬 후 id로 2차 정렬;
 
-  const validSortValues = ['asc', 'desc'];
-  const orderField = orderMapping[order] || 'createdAt';
-  const sortOrder = validSortValues.includes(sort) ? sort : 'desc';
+  // 순위를 계산하기 위해 필요한 필드만 전체 데이터에서 가져옵니다.
+  const allStartups = await prisma.startup.findMany({
+    orderBy,
+    select: {
+      id: true,
+      [orderField]: true,
+    },
+  });
 
-  const numId = parseInt(id);
-  const startup = await prisma.startup.findUnique({
-    where: { id: numId },
+  // 특정 스타트업의 인덱스 찾기
+  const targetIndex = allStartups.findIndex(startup => startup.id === parseInt(startupId));
+  if (targetIndex === -1) {
+    return res
+    .status(404)
+    .sent({ message: 'Target startup not found'});
+  }
+
+  // 기본적으로 앞뒤로 2개씩 가져옴
+  let startIndex = Math.max(0, targetIndex - 2);
+  let endIndex = Math.min(allStartups.length-1, targetIndex+2);
+
+  // 가져올 데이터가 5개가 되도록 조정
+  while (endIndex - startIndex + 1 < 5) {
+    if (startIndex > 0) {
+      startIndex--;
+    } else if (endIndex < allStartups.length -1) {
+      endIndex++;
+    } else {
+      break;
+    }
+  }
+
+  const selectedStartups = allStartups.slice(startIndex, endIndex+1).map(s=>s.id);
+
+  const startups = await prisma.startup.findMany({
+    where: {
+      id: { in: selectedStartups }
+    },
+    orderBy,
     include: {
-      mockInvestors: {
-        orderBy:  { [order]: sort },
-        skip,
-        take,
-      },
-      category: true, // Startup 의 category 관계 포함
+      category: true,
     },
   });
-  if (!startup) {
-    return res.status(404).send({message: 'No startup found with given ID'});
-  }
-  
-  const { category, mockInvestors, ...rest } = startup;
-  const formattedStartup = {
-    ...rest,
-    categoryName: category.category,
-    mockInvestors,
-  }
-  // 전체 투자자수 계산
-  const mockInvestorsCount = await prisma.mockInvestor.count({
-    where: { startupId: numId },
+
+  // 순위 계산을 위한 변수 초기화
+  let rank = 1;
+  let previousValue = null;
+  let sameRankCount = 0; // 동점자 수
+  const valueToRankMap = new Map();
+
+  // 전체 데이터를 순회하며 순위 계산
+  allStartups.forEach((startup, index) => {
+    const currentValue = startup[orderField];
+
+    if (previousValue !== null && currentValue === previousValue) {
+      // 이전 값과 동일하면 rank 유지
+      // 동점자 수 증가
+      sameRankCount++;
+    } else {
+      // 이전 값과 다르면 rank 업데이트
+      rank = index + 1;
+      sameRankCount = 0;
+    }
+
+    previousValue = currentValue;
+
+    // 해당 값에 대한 순위를 맵에 저장
+    if (!valueToRankMap.has(currentValue)) {
+      valueToRankMap.set(currentValue, rank);
+    }
   });
+
+  // 현재 페이지의 스타트업에 순위 할당
+  const formattedStartups = startups.map((startup) => {
+    const { category, ...rest } = startup;
+    const currentValue = startup[orderField];
+    const startupRank = valueToRankMap.get(currentValue);
+
+    return {
+      ...rest,
+      categoryName: category.category,
+      rank: startupRank,
+    };
+  });
+
+  const totalCount = endIndex - startIndex + 1;
+
   res.send({
-    startup: {
-      ...formattedStartup,
-      mockInvestorsCount,    
-    },
+    list: formattedStartups,
+    totalCount: totalCount,
   });
-}
-*/
+};
