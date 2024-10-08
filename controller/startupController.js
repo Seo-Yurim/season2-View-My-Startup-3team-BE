@@ -18,6 +18,8 @@ export const getStartups = async (req, res) => {
     total_investment: 'simInvest',
     revenue: 'revenue',
     employee_count: 'employees',
+    selected_count: 'selectedCount',
+    compared_count: 'comparedCount',
     createdAt: 'createdAt',
   };
   const orderField = orderMapping[order] || 'createdAt'; 
