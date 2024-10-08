@@ -78,7 +78,7 @@ export const getRecentStartup = async (req, res) => {
 // 선택한 스타트업 비교 결과 조회 API
 export const getCompare = async (req, res) => {
   const { orderBy = "asc", sortBy = "actualInvest" } = req.query;
-  const sessionId = req.body;
+  const sessionId = req.query.sessionId;
 
   const validSortFields = ["actualInvest", "revenue", "employees"];
   if (!validSortFields.includes(sortBy)) {
@@ -100,8 +100,9 @@ export const getCompare = async (req, res) => {
             id: true,
             name: true,
             description: true,
+            image: true,
             category: true,
-            actualInvest: true,
+            simInvest: true,
             revenue: true,
             employees: true,
           },
@@ -119,8 +120,9 @@ export const getCompare = async (req, res) => {
             id: true,
             name: true,
             description: true,
+            image: true,
             category: true,
-            actualInvest: true,
+            simInvest: true,
             revenue: true,
             employees: true,
           },
@@ -129,14 +131,14 @@ export const getCompare = async (req, res) => {
     }),
   ]);
 
-  const selectedResult = selection.startup;
+  const selectedResult = selection?.startup;
   const comparisonResults = comparisons.map((comparison) => comparison.startup);
 
-  const allResults = [selectedResult, ...comparisonResults];
+  const allResults = [selectedResult, ...comparisonResults].filter(Boolean);
 
   allResults.sort((a, b) => {
-    const aValue = a[sortBy];
-    const bValue = b[sortBy];
+    const aValue = Number(a[sortBy]);
+    const bValue = Number(b[sortBy]);
 
     if (orderBy === "asc") {
       return aValue - bValue;
