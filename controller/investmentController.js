@@ -171,7 +171,11 @@ export const getInvestments = async (req, res) => {
           image: true,
           name: true,
           description: true,
-          category: true,
+          category: {
+            select: {
+              category: true,
+            },
+          },
           simInvest: true,
           actualInvest: true,
         },
@@ -181,11 +185,19 @@ export const getInvestments = async (req, res) => {
     orderBy,
   });
 
+  const formattedInvestments = investments.map((investment) => ({
+    ...investment,
+    startup: {
+      ...investment.startup,
+      categoryName: investment.startup.category.category,
+    },
+  }));
+
   // 기업 중복 제거
   const filteredInvestments = [];
   const existCompanies = new Set();
 
-  investments.forEach((item) => {
+  formattedInvestments.forEach((item) => {
     if (!existCompanies.has(item.startup.name)) {
       existCompanies.add(item.startup.name);
       filteredInvestments.push(item);
