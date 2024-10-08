@@ -26,6 +26,7 @@ export const getStartup = async (req, res) => {
     skip: skip,
     take: parseInt(limit),
     select: {
+      id: true,
       image: true,
       name: true,
       category: true,
@@ -40,6 +41,37 @@ export const getStartup = async (req, res) => {
     totalPages: Math.ceil(totalCount / limit),
     totalCount,
     list: startups,
+  });
+};
+
+export const getRecentStartup = async (req, res) => {
+  // const { id } = req.body;
+  const recentStartups = await prisma.selection.findMany({
+    // where: {
+    //   startupId: id,
+    // },
+    include: {
+      startup: {
+        select: {
+          id: true,
+          image: true,
+          name: true,
+          category: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  const uniqueStartups = recentStartups.filter(
+    (value, index, self) =>
+      index === self.findIndex((item) => item.startup.id === value.startup.id),
+  );
+
+  res.send({
+    list: uniqueStartups,
   });
 };
 
