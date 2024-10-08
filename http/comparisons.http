@@ -2,6 +2,9 @@
 GET http://localhost:3000/api/comparisons/recent-select?limit=20
 
 ###
+GET http://localhost:3000/api/comparisons/recent-select?limit=20
+
+###
 GET http://localhost:3000/api/comparisons/compare
 
 ###

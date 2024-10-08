@@ -2,7 +2,7 @@
 GET http://localhost:3000/api/startups
 
 ###
-GET http://localhost:3000/api/startups?order=total_investment&sort=desc&page=1&limit=10
+GET http://localhost:3000/api/startups?order=total_investment&sort=desc&page=1&limit=1
 
 ###
 GET http://localhost:3000/api/startups?order=revenue&sort=desc&page=1&limit=10
@@ -18,3 +18,21 @@ GET http://localhost:3000/api/startups/1?order=createdAt&sort=desc
 
 ###
 GET http://localhost:3000/api/startups/1?page=1&limit=2
+
+###
+GET http://localhost:3000/api/startups/1/rank?order=revenu&sort=desc
+
+###
+GET http://localhost:3000/api/startups/4/rank
+
+###
+GET http://localhost:3000/api/startups/4/rank?order=revenu&sort=desc
+
+###
+GET http://localhost:3000/api/startups/7/rank?order=employee_count&sort=desc
+
+###
+GET http://localhost:3000/api/startups?order=selected_count&sort=desc&page=1&limit=10
+
+###
+GET http://localhost:3000/api/startups?order=compared_count&sort=desc&page=1&limit=10
