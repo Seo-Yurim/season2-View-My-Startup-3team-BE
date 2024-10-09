@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// 최근 선택된 스타트업 조회 API
+// 전체 스타트업 조회 API (검색, 정렬)
 export const getStartup = async (req, res) => {
   const { search = "", page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
@@ -44,12 +44,9 @@ export const getStartup = async (req, res) => {
   });
 };
 
+// 최근 선택된 스타트업 조회 API
 export const getRecentStartup = async (req, res) => {
-  // const { id } = req.body;
   const recentStartups = await prisma.selection.findMany({
-    // where: {
-    //   startupId: id,
-    // },
     include: {
       startup: {
         select: {
@@ -77,12 +74,18 @@ export const getRecentStartup = async (req, res) => {
 
 // 선택한 스타트업 비교 결과 조회 API
 export const getCompare = async (req, res) => {
-  const { orderBy = "asc", sortBy = "actualInvest" } = req.query;
+  const { orderBy = "desc", sortBy = "simInvest" } = req.query;
   const sessionId = req.query.sessionId;
 
-  const validSortFields = ["actualInvest", "revenue", "employees"];
+  const validSortFields = ["simInvest", "revenue", "employees"];
+  const validOrderTypes = ["asc", "desc"];
+
   if (!validSortFields.includes(sortBy)) {
     return res.status(400).send({ message: "유효하지 않은 정렬 필드입니다." });
+  }
+
+  if (!validOrderTypes.includes(orderBy)) {
+    return res.status(400).send({ message: "유효하지 않은 정렬 방향입니다." });
   }
 
   const [selection, comparisons] = await Promise.all([
@@ -91,9 +94,7 @@ export const getCompare = async (req, res) => {
         sessionId,
         isSelected: true,
       },
-      orderBy: {
-        updatedAt: "desc",
-      },
+
       select: {
         startup: {
           select: {
@@ -137,14 +138,10 @@ export const getCompare = async (req, res) => {
   const allResults = [selectedResult, ...comparisonResults].filter(Boolean);
 
   allResults.sort((a, b) => {
-    const aValue = Number(a[sortBy]);
-    const bValue = Number(b[sortBy]);
+    const aValue = Number(a[sortBy]) || 0;
+    const bValue = Number(b[sortBy]) || 0;
 
-    if (orderBy === "asc") {
-      return aValue - bValue;
-    } else {
-      return bValue - aValue;
-    }
+    return orderBy === "asc" ? aValue - bValue : bValue - aValue;
   });
 
   res.send(allResults);
