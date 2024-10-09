@@ -36,3 +36,15 @@ GET http://localhost:3000/api/startups?order=selected_count&sort=desc&page=1&lim
 
 ###
 GET http://localhost:3000/api/startups?order=compared_count&sort=desc&page=1&limit=10
+
+### ID 1번 스타트업의 상세 정보및 투자자 가져오기 ( 1page )
+GET http://localhost:3000/api/startups/1?page=1&limit=10
+
+### ID 1번 스타트업의 상세 정보및 투자자 가져오기( 2page )
+GET http://localhost:3000/api/startups/1?page=2&limit=10
+
+### 투자자 (투자금액) 순위별 가져오기 
+GET http://localhost:3000/api/startups/1?oder=investAmount&sort=desc&page=1&limit=10
+
+### 투자자 (투자금액) 순위별 가져오기 
+GET http://localhost:3000/api/startups/1?oder=investAmount&sort=desc&page=2&limit=10
