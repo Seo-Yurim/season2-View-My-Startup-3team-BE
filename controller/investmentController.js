@@ -40,8 +40,11 @@ export const createInvestment = async (req, res) => {
 
     res.status(201).json(newInvestment);
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "투자 생성 중 오류가 발생했습니다." });
+    console.error("Error during transaction:", err); // 전체 에러 객체 출력
+    res.status(500).json({
+      error: "투자 생성 중 오류가 발생했습니다.",
+      details: err.meta?.target || err.message || err,
+    });
   }
 };
 
