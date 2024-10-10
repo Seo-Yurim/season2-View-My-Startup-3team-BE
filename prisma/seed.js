@@ -24,7 +24,7 @@ async function main() {
     data: MOCK_INVESTORS,
     skipDuplicates: true,
   });
-  
+
   await prisma.selection.createMany({
     data: SELECTIONS,
     skipDuplicates: true,
