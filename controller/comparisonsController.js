@@ -85,6 +85,20 @@ export const getCompare = async (req, res) => {
     return res.status(400).send({ message: "유효하지 않은 정렬 방향입니다." });
   }
 
+  // 전체 스타트업 목록 조회
+  const allStartups = await prisma.startup.findMany({
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      image: true,
+      category: true,
+      simInvest: true,
+      revenue: true,
+      employees: true,
+    },
+  });
+
   const [selection, comparisons] = await Promise.all([
     prisma.selection.findFirst({
       where: {
@@ -134,6 +148,10 @@ export const getCompare = async (req, res) => {
 
   const allResults = [selectedResult, ...comparisonResults].filter(Boolean);
 
+  let rank = 1;
+  let previousValue = null;
+  const valueToRankMap = new Map();
+
   allResults.sort((a, b) => {
     const aValue = Number(a[sortBy]) || 0;
     const bValue = Number(b[sortBy]) || 0;
@@ -141,5 +159,29 @@ export const getCompare = async (req, res) => {
     return orderBy === "asc" ? aValue - bValue : bValue - aValue;
   });
 
-  res.send(allResults);
+  allStartups
+    .sort((a, b) => {
+      const aValue = Number(a[sortBy]) || 0;
+      const bValue = Number(b[sortBy]) || 0;
+
+      return orderBy === "asc" ? aValue - bValue : bValue - aValue;
+    })
+    .forEach((startup, index) => {
+      const currentValue = startup[sortBy];
+
+      if (previousValue !== null && currentValue === previousValue) {
+      } else {
+        rank = index + 1;
+      }
+
+      previousValue = currentValue;
+      valueToRankMap.set(startup.id, rank);
+    });
+
+  const formattedResults = allResults.map((startup) => ({
+    ...startup,
+    rank: valueToRankMap.get(startup.id),
+  }));
+
+  res.send(formattedResults);
 };
