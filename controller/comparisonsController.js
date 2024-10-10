@@ -31,9 +31,6 @@ export const getStartup = async (req, res) => {
       name: true,
       category: true,
     },
-    orderBy: {
-      updatedAt: "desc",
-    },
   });
 
   res.send({
