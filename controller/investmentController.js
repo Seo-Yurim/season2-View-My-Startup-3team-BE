@@ -40,7 +40,11 @@ export const createInvestment = async (req, res) => {
 
     res.status(201).json(newInvestment);
   } catch (err) {
-    res.status(500).json({ error: "투자 생성 중 오류가 발생했습니다." });
+    console.error("Error during transaction:", err); // 전체 에러 객체 출력
+    res.status(500).json({
+      error: "투자 생성 중 오류가 발생했습니다.",
+      details: err.meta?.target || err.message || err,
+    });
   }
 };
 
@@ -48,9 +52,9 @@ export const createInvestment = async (req, res) => {
 export const patchInvestment = async (req, res) => {
   assert(req.body, PatchInvestment);
   const { id } = req.params;
-  const { password, investAmount } = req.body;
+  const { name, investAmount, comment, password } = req.body;
 
-  // 수정하기 위해 비밀번호 검증
+  // 투자자 정보 가져오기
   const investor = await prisma.mockInvestor.findUnique({
     where: { id: parseInt(id) },
   });
@@ -66,17 +70,14 @@ export const patchInvestment = async (req, res) => {
   // 트랜잭션 처리
   try {
     const investment = await prisma.$transaction(async (prisma) => {
-      // 이전 투자 금액 저장
       const oldInvestmentAmount = investor.investAmount;
-      // 투자 정보 수정
+
       const updateInvestment = await prisma.mockInvestor.update({
         where: { id: parseInt(id) },
         data: req.body,
       });
 
-      // 이전 투자 금액과 수정된 투자 금액 비교
-      const difference = investAmount - oldInvestmentAmount;
-      // 비교 후 계산된 금액으로 StartUp 테이블 누적 모의 투자 금액 업데이트
+      const difference = BigInt(investAmount) - BigInt(oldInvestmentAmount);
       await prisma.startup.update({
         where: { id: investor.startupId },
         data: { simInvest: { increment: difference } },
@@ -94,20 +95,10 @@ export const patchInvestment = async (req, res) => {
 // 투자 정보 삭제
 export const deleteInvestment = async (req, res) => {
   const { id } = req.params;
-  const { password } = req.body;
 
-  // 삭제하기 위해 비밀번호 검증
   const investor = await prisma.mockInvestor.findUnique({
     where: { id: parseInt(id) },
   });
-
-  if (!investor) {
-    return res.status(404).json({ message: "투자자를 찾을 수 없습니다." });
-  }
-
-  if (password !== investor.password) {
-    return res.status(403).json({ message: "비밀번호가 일치하지 않습니다." });
-  }
 
   // 트랜잭션 처리
   try {
@@ -126,6 +117,7 @@ export const deleteInvestment = async (req, res) => {
 
     res.status(204).json();
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "투자 삭제 중 오류가 발생했습니다." });
   }
 };
