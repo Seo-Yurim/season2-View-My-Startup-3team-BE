@@ -23,11 +23,24 @@ export const getStartups = async (req, res) => {
     createdAt: "createdAt",
   };
   const orderField = orderMapping[order] || "createdAt";
+  /*
   // 1차 정렬(orderField), 2차 정렬(id) 설정
   const orderBy = [
     { [orderField]: safeSort },
     { id: "asc" }, // 동점일 경우 id로 2차 정렬
   ];
+  */
+
+  // 1차 정렬
+  let orderBy = [{ [orderField]: safeSort }];
+
+  // order 옵션에 따른 2차 정렬
+  if (order === "selected_count") {
+    orderBy.push({ comparedCount: safeSort }); // 2차 정렬 compared_count
+  } else if (order === "compared_count") {
+    orderBy.push({ selectedCount: safeSort }); // 2차 정렬 selected_count
+  }
+  orderBy.push({ id: "asc" }); // 모든 경우에 2차 또는 3차 정렬로 id로 추가  
 
   const where = {
     AND: [
