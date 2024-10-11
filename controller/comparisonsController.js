@@ -48,9 +48,13 @@ export const getRecentStartup = async (req, res) => {
       startup: {
         select: {
           id: true,
-          image: true,
           name: true,
+          description: true,
+          image: true,
           category: true,
+          simInvest: true,
+          revenue: true,
+          employees: true,
         },
       },
     },
