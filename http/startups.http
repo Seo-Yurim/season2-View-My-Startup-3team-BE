@@ -14,13 +14,13 @@ GET http://localhost:3000/api/startups?keyword=제공
 GET http://localhost:3000/api/startups/1
 
 ###
-GET http://localhost:3000/api/startups/1?order=createdAt&sort=desc
+GET http://localhost:3000/api/startups/11?order=createdAt&sort=desc
 
 ###
 GET http://localhost:3000/api/startups/1?page=1&limit=2
 
 ###
-GET http://localhost:3000/api/startups/1/rank?order=revenu&sort=desc
+GET http://localhost:3000/api/startups/11/rank?order=revenu&sort=desc
 
 ###
 GET http://localhost:3000/api/startups/4/rank
