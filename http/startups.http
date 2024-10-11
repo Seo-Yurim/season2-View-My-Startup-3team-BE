@@ -31,11 +31,11 @@ GET http://localhost:3000/api/startups/4/rank?order=revenu&sort=desc
 ###
 GET http://localhost:3000/api/startups/7/rank?order=employee_count&sort=desc
 
-###
-GET http://localhost:3000/api/startups?order=selected_count&sort=desc&page=1&limit=10
+### 비교현황 (나의기업 선택횟수 순)
+GET http://localhost:3000/api/startups?order=selected_count&sort=desc&page=1&limit=20
 
-###
-GET http://localhost:3000/api/startups?order=compared_count&sort=desc&page=1&limit=10
+### 비교현황 (비교기업 선택횟수 순)
+GET http://localhost:3000/api/startups?order=compared_count&sort=desc&page=1&limit=20
 
 ### ID 1번 스타트업의 상세 정보및 투자자 가져오기 ( 1page )
 GET http://localhost:3000/api/startups/1?page=1&limit=10
