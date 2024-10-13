@@ -5,6 +5,7 @@ import {
   postComparisonStartups,
   postCancelMyStartups,
   postCancelComparisonStartups,
+  getSelections,
 } from "../controller/selectionsController.js";
 
 const router = express.Router();
@@ -23,5 +24,8 @@ router.post(
   "/cancel-comparison-startups",
   asyncHandler(postCancelComparisonStartups),
 );
+
+// session에 저장된 스타트업 불러오기 API
+router.get("/", asyncHandler(getSelections));
 
 export default router;
