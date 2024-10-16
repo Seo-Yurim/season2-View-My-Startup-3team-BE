@@ -1,0 +1,50 @@
+
+GET http://localhost:3000/api/startups
+
+###
+GET http://localhost:3000/api/startups?order=total_investment&sort=desc&page=1&limit=1
+
+###
+GET http://localhost:3000/api/startups?order=revenue&sort=desc&page=1&limit=10
+
+###
+GET http://localhost:3000/api/startups?keyword=제공
+
+###
+GET http://localhost:3000/api/startups/1
+
+###
+GET http://localhost:3000/api/startups/11?order=createdAt&sort=desc
+
+###
+GET http://localhost:3000/api/startups/1?page=1&limit=2
+
+###
+GET http://localhost:3000/api/startups/11/rank?order=revenu&sort=desc
+
+###
+GET http://localhost:3000/api/startups/4/rank
+
+###
+GET http://localhost:3000/api/startups/4/rank?order=revenu&sort=desc
+
+###
+GET http://localhost:3000/api/startups/7/rank?order=employee_count&sort=desc
+
+### 비교현황 (나의기업 선택횟수 순)
+GET http://localhost:3000/api/startups?order=selected_count&sort=desc&page=1&limit=20
+
+### 비교현황 (비교기업 선택횟수 순)
+GET http://localhost:3000/api/startups?order=compared_count&sort=desc&page=1&limit=20
+
+### ID 1번 스타트업의 상세 정보및 투자자 가져오기 ( 1page )
+GET http://localhost:3000/api/startups/1?page=1&limit=10
+
+### ID 1번 스타트업의 상세 정보및 투자자 가져오기( 2page )
+GET http://localhost:3000/api/startups/1?page=2&limit=10
+
+### 투자자 (투자금액) 순위별 가져오기 
+GET http://localhost:3000/api/startups/1?oder=investAmount&sort=desc&page=1&limit=10
+
+### 투자자 (투자금액) 순위별 가져오기 
+GET http://localhost:3000/api/startups/1?oder=investAmount&sort=desc&page=2&limit=10

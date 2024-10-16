@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Startup {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  category      Category       @relation(fields: [categoryId], references: [id])
+  categoryId    Int
+  actualInvest  BigInt         @default(0) // 실제 누적 투자 금액
+  simInvest     BigInt         @default(0) // 모의 누적 투자 금액
+  revenue       BigInt // 매출액
+  employees     Int
+  description   String         @db.Text // 기업 소개
+  selectedCount Int            @default(0)
+  comparedCount Int            @default(0)
+  image         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  mockInvestors MockInvestor[]
+  selections    Selection[]
+  comparisons   Comparison[]
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  category String    @unique
+  startups Startup[]
+}
+
+model MockInvestor {
+  id           Int      @id @default(autoincrement())
+  name         String
+  startup      Startup  @relation(fields: [startupId], references: [id])
+  startupId    Int
+  investAmount BigInt   @default(0)
+  comment      String   @db.Text
+  password     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Selection {
+  id         Int      @id @default(autoincrement())
+  sessionId  String
+  isSelected Boolean  @default(false)
+  startup    Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  startupId  Int
+  createdAt  DateTime @default(now()) // 나의 기업 선택 시간
+  updatedAt  DateTime @updatedAt
+}
+
+model Comparison {
+  id         Int      @id @default(autoincrement())
+  sessionId  String
+  isCompared Boolean  @default(false)
+  startup    Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  startupId  Int
+  createdAt  DateTime @default(now()) // 비교 기업 선택 시간
+  updatedAt  DateTime @updatedAt
+}
