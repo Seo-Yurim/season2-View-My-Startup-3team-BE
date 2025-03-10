@@ -20,6 +20,7 @@ const corsOption = {
     "http://localhost:3000",
     "http://localhost:3001",
     "https://view-mystartup.netlify.app",
+    "http://view-my-startup-s3-fe.s3-website.ap-northeast-2.amazonaws.com",
   ],
 };
 app.use(cors(corsOption));
