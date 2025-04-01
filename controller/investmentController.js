@@ -196,12 +196,18 @@ export const getInvestments = async (req, res) => {
     }
   });
 
+  // 순위 추가
+  const rankedInvestments = filteredInvestments.map((investment, index) => ({
+    ...investment,
+    rank: index + 1,
+  }));
+
   // 페이지네이션
-  const paginatedInvestments = filteredInvestments.slice(
+  const paginatedInvestments = rankedInvestments.slice(
     offset,
     offset + parseInt(limit),
   );
-  const totalCount = filteredInvestments.length;
+  const totalCount = rankedInvestments.length;
 
   res.json({ list: paginatedInvestments, totalCount });
 };
